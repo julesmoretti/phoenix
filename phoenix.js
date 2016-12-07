@@ -30,6 +30,13 @@ var moveAccross = function() {
 	}
 }
 
+var screenSaver = function() {
+	// App.launch('itunes');
+	App.launch('ScreenSaverEngine');
+}
+
+// Key.on('down', allFour, function(){ screenSaver() });
+
 
 // move screen accross
 Key.on('left', twoLeft, function(){ moveAccross() });

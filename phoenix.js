@@ -35,7 +35,10 @@ var screenSaver = function() {
 	App.launch('ScreenSaverEngine');
 }
 
-// Key.on('down', allFour, function(){ screenSaver() });
+// start screen saver
+Key.on('down', allFour, function(){
+	setTimeout(screenSaver, 200);
+});
 
 
 // move screen accross

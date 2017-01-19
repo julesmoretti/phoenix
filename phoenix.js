@@ -7,37 +7,61 @@ var commands = [ 'shift', 'ctrl', 'alt', 'cmd' ];
 var altCommands = [ 'cmd' ];
 
 var gridMove = function(numbOfCol, numbOfRow, colIndex, rowIndex) {
-		var currentScreen = Window.focused().screen().flippedVisibleFrame();
-		Window.focused().setFrame({
-			"x": (currentScreen.width / numbOfCol * colIndex) + currentScreen.x,
-			"y": (currentScreen.height / numbOfRow * rowIndex) + currentScreen.y,
-			"width": currentScreen.width / numbOfCol,
-			"height": currentScreen.height / numbOfRow
-		});
+    var currentScreen = Window.focused().screen().flippedVisibleFrame();
+    Window.focused().setFrame({
+      "x": (currentScreen.width / numbOfCol * colIndex) + currentScreen.x,
+      "y": (currentScreen.height / numbOfRow * rowIndex) + currentScreen.y,
+      "width": currentScreen.width / numbOfCol,
+      "height": currentScreen.height / numbOfRow
+    });
 }
 
 var moveAccross = function() {
-	if ( Screen.all().length > 1 ) {
-		var win = Window.focused();
-		var currentScreen = win.screen();
-		var nextScreen = currentScreen.next().flippedVisibleFrame();
-		Window.focused().setFrame({
-			"x": nextScreen.x,
-			"y": nextScreen.y,
-			"width": nextScreen.width,
-			"height": nextScreen.height
-		});
-	}
+  if ( Screen.all().length > 1 ) {
+    var win = Window.focused();
+    var currentScreen = win.screen();
+    var nextScreen = currentScreen.next().flippedVisibleFrame();
+    Window.focused().setFrame({
+      "x": nextScreen.x,
+      "y": nextScreen.y,
+      "width": nextScreen.width,
+      "height": nextScreen.height,
+    });
+  }
+}
+
+var gridExpand = function(direction) {
+    var focusedWindow = Window.focused().frame();
+    var currentScreen = Window.focused().screen().flippedVisibleFrame();
+
+    Phoenix.log('focusedWindow | '+JSON.stringify(focusedWindow)+'');
+    Phoenix.log('currentScreen | '+JSON.stringify(currentScreen)+'');
+
+    if (direction === 'left') {
+      Window.focused().setFrame({
+        "x": currentScreen.x,
+        "y": focusedWindow.y,
+        "width": focusedWindow.width + focusedWindow.x - currentScreen.x,
+        "height": focusedWindow.height,
+      });
+    } else if (direction === 'right') {
+      Window.focused().setFrame({
+        "x": focusedWindow.x,
+        "y": focusedWindow.y,
+        "width": currentScreen.width - focusedWindow.x + currentScreen.x,
+        "height": focusedWindow.height,
+      });
+    }
 }
 
 var screenSaver = function() {
-	// App.launch('itunes');
-	App.launch('ScreenSaverEngine');
+  // App.launch('itunes');
+  App.launch('ScreenSaverEngine');
 }
 
 // start screen saver
 Key.on('down', allFour, function(){
-	setTimeout(screenSaver, 200);
+  setTimeout(screenSaver, 200);
 });
 
 
@@ -45,6 +69,9 @@ Key.on('down', allFour, function(){
 Key.on('left', twoLeft, function(){ moveAccross() });
 Key.on('right', twoLeft, function(){ moveAccross() });
 
+// Expand
+Key.on('left', allFour, function(){ gridExpand( 'left' ) });
+Key.on('right', allFour, function(){ gridExpand( 'right' ) });
 
 // full size
 Key.on('up', allFour, function(){ gridMove( 1, 1, 0, 0) });
@@ -119,51 +146,51 @@ Phoenix.notify('Phoenix config reloaded');
 
 
 // var ze = function(numbOfCol, numbOfRow, colIndex, rowIndex) {
-// 	Phoenix.log( 'ze - Called' );
+//  Phoenix.log( 'ze - Called' );
 
-// 	var win = Window.focused();
-// 	var oldScreen = win.screen();
-// 	var newScreen = oldScreen.next();
-// 	Phoenix.log( 'ze - Called // ' + JSON.stringify( oldScreen.flippedVisibleFrame() ) + " // " + JSON.stringify( newScreen.flippedVisibleFrame() ));
+//  var win = Window.focused();
+//  var oldScreen = win.screen();
+//  var newScreen = oldScreen.next();
+//  Phoenix.log( 'ze - Called // ' + JSON.stringify( oldScreen.flippedVisibleFrame() ) + " // " + JSON.stringify( newScreen.flippedVisibleFrame() ));
 // }
 // Key.on('down', allFour, function(){ ze( 2, 2, 1, 1) });
 //
 //
 // var gridMove = function(numbOfCol, numbOfRow, colIndex, rowIndex) {
-// 	if (Window.focused()) {
-// 		var win = Window.focused();
-// 		var size = win.size();
-// 		var frame = win.screen().flippedVisibleFrame();
-// 		var topNav = 23;
+//  if (Window.focused()) {
+//    var win = Window.focused();
+//    var size = win.size();
+//    var frame = win.screen().flippedVisibleFrame();
+//    var topNav = 23;
 
-// 		win.setFrame({
-// 			"y": (size.height * rowIndex) + topNav,
-// 			"x": size.width * colIndex,
-// 			"width": frame.width / numbOfCol,
-// 			"height": ( frame.height ) / numbOfRow
-// 		});
+//    win.setFrame({
+//      "y": (size.height * rowIndex) + topNav,
+//      "x": size.width * colIndex,
+//      "width": frame.width / numbOfCol,
+//      "height": ( frame.height ) / numbOfRow
+//    });
 
-// 		Phoenix.log( '-------------------------' );
-// 		Phoenix.log( 'window - ' + JSON.stringify(win ));
-// 		Phoenix.log( 'window - screen - hash - ' + JSON.stringify(win.screen().hash() ));
-// 		Phoenix.log( 'window - size - ' + JSON.stringify( size ));
-// 		Phoenix.log( 'window - flippedframe - ' + JSON.stringify( frame ));
-// 		Phoenix.log( 'window - screen - visible - ' + JSON.stringify(win.screen().visibleFrame() ));
-// 		Phoenix.log( 'spaces - ' + JSON.stringify(Space.all() ));
-// 		Phoenix.log( 'screens all - ' + JSON.stringify(Screen.all() ));
+//    Phoenix.log( '-------------------------' );
+//    Phoenix.log( 'window - ' + JSON.stringify(win ));
+//    Phoenix.log( 'window - screen - hash - ' + JSON.stringify(win.screen().hash() ));
+//    Phoenix.log( 'window - size - ' + JSON.stringify( size ));
+//    Phoenix.log( 'window - flippedframe - ' + JSON.stringify( frame ));
+//    Phoenix.log( 'window - screen - visible - ' + JSON.stringify(win.screen().visibleFrame() ));
+//    Phoenix.log( 'spaces - ' + JSON.stringify(Space.all() ));
+//    Phoenix.log( 'screens all - ' + JSON.stringify(Screen.all() ));
 
-// 		for ( var i = 0; i < Screen.all().length; i++ ) {
-// 			Phoenix.log( 'screens # - ' + i + " - "+ JSON.stringify(Screen.all()[i].frame() ));
-// 		}
+//    for ( var i = 0; i < Screen.all().length; i++ ) {
+//      Phoenix.log( 'screens # - ' + i + " - "+ JSON.stringify(Screen.all()[i].frame() ));
+//    }
 
-// 		Phoenix.log( 'screens all - 1st - hash - ' + JSON.stringify(Screen.all()[0].hash() ));
-// 		Phoenix.log( 'screens main - ' + JSON.stringify(Screen.main() ));
-// 		Phoenix.log( 'screens main identifier - ' + JSON.stringify(Screen.main().identifier() ));
-// 		Phoenix.log( JSON.stringify(Screen.main().visibleFrame() ));
-// 		Phoenix.log( JSON.stringify(Screen.main().flippedFrame() ));
-// 		Phoenix.log( JSON.stringify(win.screen().flippedFrame() ));
-// 		Phoenix.log( JSON.stringify(win.size() ));
-// 	}
+//    Phoenix.log( 'screens all - 1st - hash - ' + JSON.stringify(Screen.all()[0].hash() ));
+//    Phoenix.log( 'screens main - ' + JSON.stringify(Screen.main() ));
+//    Phoenix.log( 'screens main identifier - ' + JSON.stringify(Screen.main().identifier() ));
+//    Phoenix.log( JSON.stringify(Screen.main().visibleFrame() ));
+//    Phoenix.log( JSON.stringify(Screen.main().flippedFrame() ));
+//    Phoenix.log( JSON.stringify(win.screen().flippedFrame() ));
+//    Phoenix.log( JSON.stringify(win.size() ));
+//  }
 // }
 
 // Thank you for the swift response. So here are the steps so far:
